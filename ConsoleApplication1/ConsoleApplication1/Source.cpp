@@ -1,8 +1,5 @@
 #include "decisionTree.h"
-
-
-
-#include <windows.h> // use as needed for your system
+#include <windows.h>
 #include <gl/Gl.h>
 #include <gl/glut.h>
 #include <iostream>
