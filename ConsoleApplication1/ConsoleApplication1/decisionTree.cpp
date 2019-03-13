@@ -8,6 +8,22 @@ decisionTree::decisionTree()
 	populateTree();
 }
 
+// creates a dummy tree for implementing graphics DEPRECATED
+decisionTree::decisionTree(int n)
+{
+	cout << "Creating Dummy Tree" << "\n";
+	root = NULL;
+	insert(0, 2.5, "", "root", "N/A", NodeType::SPLIT);
+	insert(1, 2.5, "", "ucellsize<2.5", "N/A", NodeType::SPLIT);
+	insert(2, 4.5, "", "ucellsize>=2.5", "N/A", NodeType::SPLIT);
+	insert(3, 0, "", "bnuclei<2.5", "benign", NodeType::CLASSIFICATION);
+	insert(4, 0, "", "bnuclei>=2.5", "malignant", NodeType::CLASSIFICATION);
+	insert(5, 2.5, "", "ucellsize<=4.5", "N/A", NodeType::SPLIT);
+	insert(6, 0, "", "ucellsize>=4.5", "malignant", NodeType::CLASSIFICATION);
+	insert(7, 0, "", "clump<6.5", "benign", NodeType::CLASSIFICATION);
+	insert(8, 0, "", "clump>=6.5", "malignant", NodeType::CLASSIFICATION);
+}
+
 // destructor
 decisionTree::~decisionTree()
 {
@@ -74,33 +90,14 @@ void decisionTree::parseData()
 		n.value = stoi(num);
 		n.comparison = comparison;
 		n.classification = decision;
-		n.type = NodeType::UNDEFINED;
+		
+		if (decision == "N/A")
+			n.type = NodeType::SPLIT;
+		else
+			n.type = NodeType::CLASSIFICATION;
 
 		// put node in vector
 		nodes.push_back(n);
-	}
-}
-
-void decisionTree::GetData(string fileName)
-{
-	ifstream file(fileName);
-	string line = "";
-	vector<double> attributes;
-
-	getline(file, line);
-
-	int numAttributes = stoi(line);
-
-	while (getline(file, line, ',')) {
-
-		attributes.push_back(stod(line));
-
-		if (attributes.size() == numAttributes) {
-			getline(file, line);
-			data.push_back(DataPoint(attributes, line));
-			attributes.clear();
-		}
-
 	}
 }
 
@@ -108,47 +105,14 @@ void decisionTree::populateTree()
 {
 	int keyCount = 0;
 	// first node will be root
-	insert(keyCount, nodes[0].value, "N/A", "root", "N/A", NodeType::ROOT);
+	insert(keyCount, nodes[0].value, "N/A", "root", "N/A", NodeType::SPLIT);
 	keyCount++;
-	int splitCount = 0;
 
 	// for every following node, check to see if it matches another. If it does, modify it and continue
 	for (int i = 0; i < nodes.size(); i++)
 	{
-		for (int j = i + 1; j < nodes.size(); j++)
-		{
-			if ((nodes[i].attribute + to_string(nodes[i].value)) == (nodes[j].attribute + to_string(nodes[j].value)))
-			{
-				if (splitCount % 2 == 0)
-				{
-					insert(keyCount, nodes[i].value, nodes[i].attribute, nodes[i].comparison, nodes[i].classification, NodeType::LEFT_SPLIT);
-					keyCount++;
-
-					insert(keyCount, nodes[j].value, nodes[j].attribute, nodes[j].comparison, nodes[j].classification, NodeType::LEFT_SPLIT);
-					keyCount++;
-					nodes[i].attribute = "";
-					nodes[j].attribute = to_string(j + 10);
-
-					splitCount++;
-					continue;
-				}
-				else
-				{
-					insert(keyCount, nodes[i].value, nodes[i].attribute, nodes[i].comparison, nodes[i].classification, NodeType::RIGHT_SPLIT);
-					keyCount++;
-
-					insert(keyCount, nodes[j].value, nodes[j].attribute, nodes[j].comparison, nodes[j].classification, NodeType::RIGHT_SPLIT);
-					keyCount++;
-					nodes[i].attribute = "";
-					nodes[j].attribute = to_string(j + 10);
-
-					splitCount++;
-					continue;
-				}
-
-			}
-		}
-
+		insert(keyCount, nodes[i].value, nodes[i].attribute, nodes[i].comparison, nodes[i].classification, nodes[i].type);
+		keyCount++;
 	}
 }
 
@@ -167,7 +131,6 @@ void decisionTree::insert(int key, int value, string attribute, string compare, 
 			parent->left->comparison = compare;
 			parent->left->classification = classification;
 			parent->left->type = type;
-			parent->left->parentSplit = parent->type;
 			parent->left->left = NULL;
 			parent->left->right = NULL;
 		}
@@ -185,7 +148,6 @@ void decisionTree::insert(int key, int value, string attribute, string compare, 
 			parent->right->comparison = compare;
 			parent->right->classification = classification;
 			parent->right->type = type;
-			parent->right->parentSplit = parent->type;
 			parent->right->left = NULL;
 			parent->right->right = NULL;
 		}
@@ -204,8 +166,7 @@ void decisionTree::insert(int key, int value, string attribute, string compare, 
 		root->attribute = attribute;
 		root->comparison = compare;
 		root->classification = classification;
-		root->type = NodeType::ROOT;
-		root->parentSplit = NodeType::UNDEFINED;
+		root->type = type;
 		root->left = NULL;
 		root->right = NULL;
 	}
@@ -236,10 +197,8 @@ node* decisionTree::search(int key)
 void decisionTree::printTree()
 {
 	cout << "Printing tree info: " << endl << endl;
-	cout << "Key: " << root->key << "\tCond: " << (root->comparison)
-		<< "\tClass: " << root->classification <<
-		"\tParent Split: N/A" << endl;
-
+	cout << "Key: " << root->key << "\tCondition: " << (root->comparison)
+		<< "\tClass: " << root->classification << endl;
 	printTree(root->left);
 	printTree(root->right);
 }
@@ -249,39 +208,8 @@ void decisionTree::printTree(node *leaf)
 {
 	if (leaf != NULL)
 	{
-		cout << "Key: " << leaf->key << "\tCond: " << leaf->attribute + leaf->comparison
-			<< "\tClass: " << leaf->classification;
-
-		if (leaf->type == NodeType::UNDEFINED)
-		{
-			cout << "\tCan't tell whether node is result of left or right split! ";
-		}
-		else if (leaf->type == NodeType::LEFT_SPLIT)
-		{
-			cout << "\tNode is result of a left split! ";
-		}
-		else if (leaf->type == NodeType::RIGHT_SPLIT)
-		{
-			cout << "\tNode is result of a right split! ";
-		}
-
-		if (leaf->parentSplit == NodeType::ROOT)
-		{
-			cout << "\tParent was Root! " << endl;
-		}
-		else if (leaf->parentSplit == NodeType::LEFT_SPLIT)
-		{
-			cout << "\tParent was a Left Split! " << endl;
-		}
-		else if (leaf->parentSplit == NodeType::RIGHT_SPLIT)
-		{
-			cout << "\tParent was a Right Split! " << endl;
-		}
-		else
-		{
-			cout << "Parent didn't exist????? " << endl;
-		}
-
+		cout << "Key: " << leaf->key << "\tCondition: " << leaf->attribute + leaf->comparison
+			<< "\tClass: " << leaf->classification << endl;
 		printTree(leaf->left);
 		printTree(leaf->right);
 	}
