@@ -1,0 +1,390 @@
+#include <gl/freeglut.h>
+#include <iostream>
+
+void init();
+void display(void);
+void centerOnScreen();
+void drawObject();
+
+//  define the window position on screen
+int window_x;
+int window_y;
+
+//  variables representing the window size
+int window_width = 1000;
+int window_height = 1000;
+
+//  variable representing the window title
+char *window_title = "CS456 GROUP PROJECT";
+
+//-------------------------------------------------------------------------
+//  Program Main method.
+//-------------------------------------------------------------------------
+void main(int argc, char **argv)
+{
+	//  Connect to the windowing system + create a window
+	//  with the specified dimensions and position
+	//  + set the display mode + specify the window title.
+	glutInit(&argc, argv);
+	//centerOnScreen();
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+	glutInitWindowSize(640, 480); // set window size
+	glutInitWindowPosition(100, 150); // set the window position on screen
+	glutCreateWindow(window_title);
+
+	//  Set OpenGL program initial state.
+	init();
+
+	// Set the callback functions
+	glutDisplayFunc(display);
+
+	// Enable blending
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	//glViewport(0, 0, window_width/2, window_height/2);
+	//  Start GLUT event processing loop
+	glutMainLoop();
+}
+
+//-------------------------------------------------------------------------
+//  Set OpenGL program initial state.
+//-------------------------------------------------------------------------
+void init()
+{
+	//  Set the frame buffer clear color to black. 
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+}
+
+//-------------------------------------------------------------------------
+//  This function is passed to glutDisplayFunc in order to display 
+//  OpenGL contents on the window.
+//-------------------------------------------------------------------------
+void display(void)
+{
+	//  Clear the window or more specifically the frame buffer...
+	//  This happens by replacing all the contents of the frame
+	//  buffer by the clear color (black in our case)
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	//  Draw object
+	drawObject();
+
+	//  Swap contents of backward and forward frame buffers
+	glutSwapBuffers();
+}
+
+
+//-------------------------------------------------------------------------
+//  Colors
+//-------------------------------------------------------------------------
+
+struct Color {
+	GLfloat r;
+	GLfloat g;
+	GLfloat b;
+	GLfloat a;
+};
+
+const Color ORANGE = { 0.929f, 0.490f, 0.192f, 1.0f };
+const Color BLUE = { 0.357f, 0.609f, 0.835f, 1.0f };
+const Color GRAY = { 0.851f, 0.851f, 0.851f, 1.0f };
+const Color WHITE = { 1.0f, 1.0f, 1.0f, 1.0f };
+const Color BLACK = { 0.0f, 0.0f, 0.0f, 1.0f };
+const Color RED = { 1.0f, 0.0f, 0.0f, 1.0f };
+
+const Color ORANGE_DISABLED = { 0.929f, 0.490f, 0.192f, 0.35f };
+const Color BLUE_DISABLED = { 0.357f, 0.609f, 0.835f, 0.35f };
+const Color GRAY_DISABLED = { 0.851f, 0.851f, 0.851f, 0.35f };
+const Color WHITE_DISABLED = { 1.0f, 1.0f, 1.0f, 0.35f };
+const Color BLACK_DISABLED = { 0.0f, 0.0f, 0.0f, 0.35f };
+const Color RED_DISABLED = { 1.0f, 0.0f, 0.0f, 0.35f };
+
+/*
+//-------------------------------------------------------------------------
+//  Rules
+//-------------------------------------------------------------------------
+
+struct Rules {
+	int dataClass; // need 2-3, 0 = split
+
+};
+
+const Rules ORANGE = { 0.929f, 0.490f, 0.192f, 1.0f };
+
+
+//-------------------------------------------------------------------------
+//  Quadrant
+//-------------------------------------------------------------------------
+
+struct Quadrant {
+	int dataClass; // need 2-3, 0 = split
+
+};
+
+const Quadrant ORANGE = { 0.929f, 0.490f, 0.192f, 1.0f };
+*/
+
+//-------------------------------------------------------------------------
+//  Rect
+//-------------------------------------------------------------------------
+
+struct Rect {
+	GLfloat x1;
+	GLfloat y1;
+	GLfloat x2;
+	GLfloat y2;
+	Color c;
+};
+
+const Rect WINDOWP = { 0.0f, 0.0f, 0.0f, 0.0f, GRAY };
+const Rect TESTP = { -1.0f, 1.0f, 0.0f, 0.0f, BLACK };
+const Rect TEST = { -0.1f, 0.1f, 0.1f, -0.1f, RED};
+
+//-------------------------------------------------------------------------
+//  Draw Helpers
+//-------------------------------------------------------------------------
+void clearBackground(Color c) {
+	glClear(GL_COLOR_BUFFER_BIT);
+	glClearColor(c.r, c.g, c.b, c.a);
+}
+
+void drawRect(float x, float y, Color c) {
+	glBegin(GL_TRIANGLES);
+	glColor4f(c.r, c.g, c.b, c.a);
+	glVertex2f(-x, y);
+	glVertex2f(-x, -y);
+	glVertex2f(x, y);
+	glVertex2f(x, y);
+	glVertex2f(-x, -y);
+	glVertex2f(x, -y);
+	glEnd();
+}
+
+void drawCoordRect(Rect p, Rect r, GLfloat pad) {
+	glColor4f(r.c.r, r.c.g, r.c.b, r.c.a);
+	glRectf(r.x1+p.x1, r.y1+p.y1, r.x2+p.x2, r.y2+p.y2);
+}
+
+Color getClassColor(int cls) {
+	switch (cls) {
+	case 0:
+		return GRAY;
+	case 1:
+		return ORANGE;
+	case 2:
+		return BLUE;
+	case 3:
+		return RED;
+
+	// Get disabled class number + 4
+	case 4:
+		return GRAY_DISABLED;
+	case 5:
+		return ORANGE_DISABLED;
+	case 6:
+		return BLUE_DISABLED;
+	case 7:
+		return RED_DISABLED;
+	default:
+		return GRAY;
+	}
+}
+
+void drawQuadrant(GLint x, GLint y) {
+
+	//Decisions data[]; //figure out how to get max
+
+	//glClear(GL_COLOR_BUFFER_BIT);
+	// Sets up FIRST viewport spanning the left-bottom quarter of the interface window
+	GLsizei w = 500;
+	GLsizei h = 500;
+	glViewport(x, y, w, h);
+	// Sets up the PROJECTION matrix
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	// Draw rectangle
+	Color c = BLACK; // background color
+	glColor4f(c.r,c.g,c.b,c.a);
+	glRectf(0.0, 0.0, 1.0, 1.0);
+
+
+	// push all the splits attributes
+
+	float maxX=8.0f;
+	float maxY=10.0f;
+	// for loop through rules here
+	/* for int i, attributes, pick two at a time, X is first, Y is second
+			X axis
+			//draw left rule
+		   c=getClassColor(a[i].classl);
+		   glColor4f(c.r, c.g, c.b, c.a);
+		   a[i].rulei.left less than or equal
+		   glRectf(0.0, 0.0, 0.1, 1.0);
+
+
+		   //draw left rule
+		   c=getClassColor(a[i].classr);
+		   glColor4f(c.r, c.g, c.b, c.a);
+		   a[i].rulei.right less than or equal
+				con/maxX
+		   glRectf(0.0, 0.0, 0.1, 1.0);
+
+		   Y axis
+		   //draw left rule
+		   c=getClassColor(a[i].classl);
+		   glColor4f(c.r, c.g, c.b, c.a);
+		   a[i].rulei.left less than or equal
+		   glRectf(0.0, 0.0, 0.1, 1.0);
+
+
+		   //draw left rule
+		   c=getClassColor(a[i].classr);
+		   glColor4f(c.r, c.g, c.b, c.a);
+		   a[i].rulei.right less than or equal
+			con/maxY
+		   glRectf(0.0, 0.0, 0.1, 1.0);
+
+	*/
+	float testCon = 1.5;
+	GLfloat xPer = testCon / maxX;
+	//FOR X AXIS attribute 1
+	//if right not split
+	if (true) {
+		c = BLUE; //replace with its class
+		float testCon = 2.5;
+		GLfloat xPer = testCon / maxX;
+		glColor4f(c.r, c.g, c.b, c.a);
+		glRectf(0.0, 0.0, xPer, 1.0);
+	}
+	//else if right split
+	else {
+		c = GRAY;
+		float testCon = 2.5;
+		GLfloat xPer = testCon / maxX;
+		glColor4f(c.r, c.g, c.b, c.a);
+		glRectf(0.0, 0.0, xPer, 1.0);
+	}
+	//if right was split then dont check left
+	if (false) {
+		//if left not split
+		if (false) {
+			c = ORANGE; //replace with its class
+			float testCon = 2.5;
+			GLfloat xPer = testCon / maxX;
+			glColor4f(c.r, c.g, c.b, c.a);
+			glRectf(xPer, 0.0, 1.0, 1.0);
+		}
+		//else if left split
+		else {
+			c = GRAY;
+			float testCon = 2.5;
+			GLfloat xPer = testCon / maxX;
+			glColor4f(c.r, c.g, c.b, c.a);
+			glRectf(xPer, 0.0, 1.0, 1.0);
+		}
+	}
+
+	//FOR Y AXIS attribute 2 (look for this on right split first then left second)
+	//if right not split
+	if (false) {
+		c = BLUE; //replace with its class
+		float testCon = 4.5;
+		GLfloat yPer = testCon / maxY;
+		glColor4f(c.r, c.g, c.b, c.a);
+		glRectf(xPer, 0.0, 1.0, yPer);
+	}
+	//else if right split
+	else {
+		c = GRAY;
+		float testCon = 4.5;
+		GLfloat yPer = testCon / maxY;
+		glColor4f(c.r, c.g, c.b, c.a);
+		glRectf(xPer, 0.0, 1.0, yPer);
+	}
+	//if left not split
+	if (true) {
+		c = ORANGE; //replace with its class
+		float testCon = 4.5;
+		GLfloat yPer = testCon / maxY;
+		glColor4f(c.r, c.g, c.b, c.a);
+		glRectf(xPer, yPer, 1.0, 1.0);
+	}
+	//else if left split
+	else {
+		c = GRAY;
+		float testCon = 4.5;
+		GLfloat yPer = testCon / maxY;
+		glColor4f(c.r, c.g, c.b, c.a);
+		glRectf(xPer, yPer, 1.0, 1.0);
+	}
+}
+
+
+//-------------------------------------------------------------------------
+//  Draws our object.
+//-------------------------------------------------------------------------
+void drawObject()
+{
+
+
+	glBegin(GL_POINTS);\
+	Color c = WHITE;
+	glColor4f(c.r, c.g, c.b, c.a);
+	glVertex2i(100, 50);
+	glVertex2i(100, 130);
+	glVertex2i(150, 130);
+	glEnd();
+
+
+	// Clear window
+	/*clearBackground(BLUE);
+
+ 
+	 
+
+
+	glViewport(500,500,500,500);
+	//glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	drawRect(500, 500, RED);
+	glBegin(GL_LINES);
+	Color c = BLACK;
+	glColor4f(c.r, c.g, c.b, c.a);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(50.0f, 2000.0f, 0.0f);
+	glEnd(); */
+	/*
+	GLint x = -250;
+	GLint xx = 250;
+	GLint y = 500;
+	GLint yy = 500;
+	drawQuadrant(x, y);
+	drawQuadrant(((xx * 1)+x) + (10 * 1), y);
+	drawQuadrant(((xx * 2) + x) + (10 * 2), y );
+
+
+	GLsizei w = 4000;
+	GLsizei h = 4000;
+	glViewport(-2000, -2000, w, h);
+	// Sets up the PROJECTION matrix
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	Color c = BLACK;
+	glColor4f(c.r, c.g, c.b, c.a);
+	glBegin(GL_LINES);
+	glVertex3f(0.0f, 0.0f, 0.0f); // origin of the line
+	glVertex3f(50.0f, 2000.0f, 0.0f); // ending point of the line
+	glEnd();*/
+}
+
+//-------------------------------------------------------------------------
+//  This function sets the window x and y coordinates
+//  such that the window becomes centered
+//-------------------------------------------------------------------------
+void centerOnScreen()
+{
+	window_x = (glutGet(GLUT_SCREEN_WIDTH) - window_width) / 2;
+	window_y = (glutGet(GLUT_SCREEN_HEIGHT) - window_height) / 2;
+}
