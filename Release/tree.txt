@@ -1,0 +1,16 @@
+{ucellsize}{<}{2.5}{N/A}
+	{bnuclei}{<}{4.5}then {begnin}
+	{bnuclei}{>=}{4.5}then {malignant}
+{ucellsize}{>=}{2.5}{N/A}
+	{bchromatin}{<}{1.5}then {begnin}
+	{bchromatin}{>=}{1.5}{N/A}
+		{clump}{<}{4.5}{N/A}
+			{bnuclei}{<}{6.0}{N/A}
+				{mgadhesion}{<}{3.5}then {begnin}
+				{mgadhesion}{>=}{3.5}{N/A}
+					{mgadhesion}{<}{3.5}then {begnin}
+					{mgadhesion}{>=}{3.5}then {malignant}
+						{mgadhesion}{<}{3.5}then {begnin}
+						{mgadhesion}{>=}{3.5}then {malignant}
+			{bnuclei}{>=}{6.0}then {malignant}
+		{clump}{>=}{4.5}then {malignant}
