@@ -1,8 +1,0 @@
-{ucellsize}{<}{2.5}then {benign}
-{ucellsize}{>=}{2.5}{N/A}
-	{ucellsize}{<=}{4.5}{N/A}
-		{bnuclei}{<}{2.5}then {benign}
-		{bnuclei}{>=}{2.5}{N/A}
-			{clump}{<}{6.5}then {benign}
-			{clump}{>=}{6.5}then {malignant}
-	{ucellsize}{>=}{4.5}then {malignant}
