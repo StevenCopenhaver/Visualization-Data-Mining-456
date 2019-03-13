@@ -89,8 +89,8 @@ void decisionTree::parseData()
 		// to temporarily hold the classifier
 		string decision = line;
 
-		// if the attribute isn't already present in the vector of possible attributes, add it (unless it's empty)
-		if (!(find(classes.begin(), classes.end(), decision) != classes.end()))
+		// if the class isn't already present in the vector of possible attributes, add it (unless it's empty)
+		if (!(find(classes.begin(), classes.end(), decision) != classes.end()) && decision != "N/A")
 			classes.push_back(decision);
 
 		// create a node to store in vector
@@ -100,7 +100,7 @@ void decisionTree::parseData()
 		n.value = stoi(num);
 		n.comparison = comparison;
 		n.classification = decision;
-		
+
 		if (decision == "N/A")
 			n.type = NodeType::SPLIT;
 		else
@@ -146,7 +146,7 @@ void decisionTree::populateTree()
 	// for every following node, check to see if it matches another. If it does, modify it and continue
 	for (int i = 1; i < nodes.size(); i++)
 	{
-		for (int j = i+1; j < nodes.size(); j++)
+		for (int j = i + 1; j < nodes.size(); j++)
 		{
 			if ((nodes[i].attribute + to_string(nodes[i].value)) == (nodes[j].attribute + to_string(nodes[j].value)))
 			{
@@ -155,11 +155,11 @@ void decisionTree::populateTree()
 				insert(keyCount, nodes[j].value, nodes[j].attribute, nodes[j].comparison, nodes[j].classification, nodes[j].type);
 				keyCount++;
 				nodes[i].attribute = "";
-				nodes[j].attribute = to_string(j+10);
+				nodes[j].attribute = to_string(j + 10);
 				continue;
 			}
 		}
-		
+
 	}
 }
 
@@ -270,6 +270,14 @@ void decisionTree::destroyTree(node *leaf)
 		destroyTree(leaf->left);
 		destroyTree(leaf->right);
 		delete leaf;
+	}
+}
+
+void decisionTree::printClasses()
+{
+	for (int i = 0; i < classes.size(); i++)
+	{
+		cout << classes[i] << endl;
 	}
 }
 

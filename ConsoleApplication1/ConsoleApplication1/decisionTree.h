@@ -51,6 +51,8 @@ public:
 	vector<string> attributes;
 	vector<node> nodes;
 
+	void printClasses();
+
 private:
 	void parseData();
 	void destroyTree(node *leaf);
