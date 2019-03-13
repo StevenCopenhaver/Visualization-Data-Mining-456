@@ -21,18 +21,6 @@ struct node
 	node *right;
 };
 
-struct DataPoint {
-
-	vector<double> attributes;
-	string target;
-
-	DataPoint(vector<double> attributes, string target) {
-		this->attributes = attributes;
-		this->target = target;
-	}
-
-};
-
 class decisionTree
 
 {
@@ -45,9 +33,7 @@ public:
 	node *search(int key);
 	void destroyTree();
 	void populateTree();
-	void GetData(string fileName);
 
-	vector<DataPoint> data;
 	vector<string> classes;
 	vector<string> attributes;
 	vector<node> nodes;

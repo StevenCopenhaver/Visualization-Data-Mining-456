@@ -45,6 +45,16 @@ void decisionTree::parseData()
 	ifstream file("tree.txt");
 	string line;
 
+
+	node r;
+	r.key = 0;
+	r.attribute = "N/A";
+	r.value = 0;
+	r.comparison = "ROOT";
+	r.classification = "ROOT";
+	r.type = NodeType::SPLIT;
+	nodes.push_back(r);
+
 	for (int i = 1; i <= numLines; i++)
 	{
 		// get the attribute name from the line
@@ -101,31 +111,6 @@ void decisionTree::parseData()
 	}
 }
 
-void decisionTree::GetData(string fileName)
-{
-	ifstream file(fileName);
-	string line = "";
-	vector<double> attributes;
-
-	getline(file, line);
-
-	int numAttributes = stoi(line);
-
-	while (getline(file, line, ',')) {
-
-		attributes.push_back(stod(line));
-
-		if (attributes.size() == numAttributes) {
-			getline(file, line);
-			data.push_back(DataPoint(attributes, line));
-			attributes.clear();
-		}
-
-	}
-
-	file.close();
-}
-
 void decisionTree::populateTree()
 {
 	int keyCount = 0;
@@ -134,10 +119,22 @@ void decisionTree::populateTree()
 	keyCount++;
 
 	// for every following node, check to see if it matches another. If it does, modify it and continue
-	for (int i = 0; i < nodes.size(); i++)
+	for (int i = 1; i < nodes.size(); i++)
 	{
-		insert(keyCount, nodes[i].value, nodes[i].attribute, nodes[i].comparison, nodes[i].classification, nodes[i].type);
-		keyCount++;
+		for (int j = i+1; j < nodes.size(); j++)
+		{
+			if ((nodes[i].attribute + to_string(nodes[i].value)) == (nodes[j].attribute + to_string(nodes[j].value)))
+			{
+				insert(keyCount, nodes[i].value, nodes[i].attribute, nodes[i].comparison, nodes[i].classification, nodes[i].type);
+				keyCount++;
+				insert(keyCount, nodes[j].value, nodes[j].attribute, nodes[j].comparison, nodes[j].classification, nodes[j].type);
+				keyCount++;
+				nodes[i].attribute = "";
+				nodes[j].attribute = to_string(j+10);
+				continue;
+			}
+		}
+		
 	}
 }
 
