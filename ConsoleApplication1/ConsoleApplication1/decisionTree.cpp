@@ -81,6 +81,29 @@ void decisionTree::parseData()
 	}
 }
 
+void decisionTree::GetData(string fileName)
+{
+	ifstream file(fileName);
+	string line = "";
+	vector<double> attributes;
+
+	getline(file, line);
+
+	int numAttributes = stoi(line);
+
+	while (getline(file, line, ',')) {
+
+		attributes.push_back(stod(line));
+
+		if (attributes.size() == numAttributes) {
+			getline(file, line);
+			data.push_back(DataPoint(attributes, line));
+			attributes.clear();
+		}
+
+	}
+}
+
 void decisionTree::populateTree()
 {
 	int keyCount = 0;
