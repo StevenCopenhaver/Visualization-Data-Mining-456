@@ -109,7 +109,6 @@
 7.3,2.9,6.3,1.8,Iris-virginica
 6.7,2.5,5.8,1.8,Iris-virginica
 7.2,3.6,6.1,2.5,Iris-virginica
-4
 6.5,3.2,5.1,2.0,Iris-virginica
 6.4,2.7,5.3,1.9,Iris-virginica
 6.8,3.0,5.5,2.1,Iris-virginica
