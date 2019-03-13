@@ -24,7 +24,7 @@ int quandrantSize = 100;
 int marginX = quandrantSize / 3;
 int marginY = quandrantSize / 3;
 int line_width = quandrantSize / 200;
-
+int done = false;
 
 
 int xN = 1;
@@ -413,7 +413,7 @@ void drawQuadrant(int kindOf) {
 
 	}
 	else {
-		if (tree.search(i)->type == NodeType::RIGHT_SPLIT) {
+		/*if (tree.search(i)->type == NodeType::RIGHT_SPLIT) {
 			cout << "TYPE RIGHT\n";
 		}else {
 			cout << "TYPE LEFT\n";
@@ -423,7 +423,7 @@ void drawQuadrant(int kindOf) {
 		}
 		else {
 			cout << "TYPE LEFT\n";
-		}
+		}*/
 		if (tempYl->type == NodeType::RIGHT_SPLIT) { //right
 			cout << "TYPE RIGHT\n";
 				createRect(xRatio, yRatio, posX2, posY2, getClassColor(tempYr->classification));
@@ -457,61 +457,64 @@ void centerOnScreen(){
 }
 
 void myDisplay(void){
-	glClear(GL_COLOR_BUFFER_BIT); // clear the screen
-	GLsizei w = window_width;
-	GLsizei h = window_height;
-	glViewport(0, 0, w, h);
+	if (!done) {
+		glClear(GL_COLOR_BUFFER_BIT); // clear the screen
+		GLsizei w = window_width;
+		GLsizei h = window_height;
+		glViewport(0, 0, w, h);
 
-	int amt = 1;
-	while(true){
-		if(tree.search(amt) == nullptr) break;
-		amt++;
-	}
-	boolean odd;
-	amt--;
-	amt /= 2;
-	if(amt % 2 == 0){ 
-		odd = false; 
+		int amt = 1;
+		while (true) {
+			if (tree.search(amt) == nullptr) break;
+			amt++;
+		}
+		boolean odd;
+		amt--;
 		amt /= 2;
+		if (amt % 2 == 0) {
+			odd = false;
+			amt /= 2;
+		}
+		else { // TODO CHECK ODD
+			amt++;
+			odd = true;
+			amt /= 2;
+		}
+
+		for (int i = 0; i < amt; i++) {
+			if (odd) drawQuadrant(3);
+			else drawQuadrant(1);
+		}
+		yN = 1;
+		xN = 1;
+		currentNode = 1;
+
+		for (int i = 0; i < amt; i++) {
+			if (odd) drawQuadrant(4);
+			else drawQuadrant(0);
+		}
+		yN = 1;
+		xN = 1;
+		currentNode = 1;
+
+		//drawQuadrant();
+		//for (int i = 0; i < 13; i++){
+		//	cout << tree.search(i)->attribute << "\n";
+		//}cout << "\n";
+
+
+		//createRect(90, 90, 100, 100, ORANGE_DISABLED);
+		/*
+		glBegin(GL_POINTS);
+		glVertex2i(59, 50); // draw three points
+		glVertex2i(100, 130);
+		glVertex2i(150, 130);
+		glEnd();*/
+
+		glFlush(); // send all output to display
+		glutSwapBuffers();
 	}
-	else{ // TODO CHECK ODD
-		amt++;
-		odd = true;
-		amt /= 2;
-	}
-
-	for (int i = 0; i < amt; i++){
-		if(odd) drawQuadrant(3);
-		else drawQuadrant(1);
-	}
-	yN = 1;
-	xN = 1;
-	currentNode = 1;
-
-	for (int i = 0; i < amt; i++) {
-		if (odd) drawQuadrant(4);
-		else drawQuadrant(0);
-	}
-	yN = 1;
-	xN = 1;
-	currentNode = 1;
-
-	//drawQuadrant();
-	//for (int i = 0; i < 13; i++){
-	//	cout << tree.search(i)->attribute << "\n";
-	//}cout << "\n";
-	
-
-	//createRect(90, 90, 100, 100, ORANGE_DISABLED);
-	/*
-	glBegin(GL_POINTS);
-	glVertex2i(59, 50); // draw three points
-	glVertex2i(100, 130);
-	glVertex2i(150, 130);
-	glEnd();*/
-
-	glFlush(); // send all output to display
-	glutSwapBuffers();
+	done = true;
 }
 //<<<<<<<<<<<<<<<<<<<<<<<< main >>>>>>>>>>>>>>>>>>>>>>
 
