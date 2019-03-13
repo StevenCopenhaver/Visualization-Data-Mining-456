@@ -45,6 +45,7 @@ public:
 	node *search(int key);
 	void destroyTree();
 	void populateTree();
+	void GetData(string fileName);
 
 	vector<DataPoint> data;
 	vector<string> classes;
@@ -53,7 +54,6 @@ public:
 
 private:
 	void parseData();
-	void GetData(string fileName);
 	void destroyTree(node *leaf);
 	void insert(int key, int value, string attribute, string compare, string classification, NodeType type, node *leaf);
 	void printTree(node *leaf);

@@ -122,6 +122,8 @@ void decisionTree::GetData(string fileName)
 		}
 
 	}
+
+	file.close();
 }
 
 void decisionTree::populateTree()
