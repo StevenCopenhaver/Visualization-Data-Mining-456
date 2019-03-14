@@ -15,7 +15,7 @@ int window_x;
 int window_y;
 
 
-int window_width = 1000;
+int window_width = 800;
 int window_height = 700;
 int quandrantSize = 200;
 int marginX = quandrantSize / 3;
@@ -167,8 +167,11 @@ void drawLHelp(float pointAX, float pointAY, float pointBX, float pointBY) {
 
 // Returns the Max double in the vector
 float getMaxVec(vector<double> v) {
-
-	return float;
+	float max = 0;
+	for (int i = 0; i < v.size; i++) {
+		if (v[i] > max) max = (float)v[i];
+	}
+	return max;
 }
 
 float getRandF(float a, float b) {
