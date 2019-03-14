@@ -11,7 +11,7 @@ enum class NodeType { CLASSIFICATION, SPLIT };
 struct node
 {
 	int key;
-	int value;
+	float value;
 	NodeType type;
 	string attribute;
 	string comparison;
@@ -40,7 +40,7 @@ public:
 	decisionTree();
 	decisionTree(int n);
 	~decisionTree();
-	void insert(int key, int value, string attribute, string compare, string classification, NodeType type);
+	void insert(int key, float value, string attribute, string compare, string classification, NodeType type);
 	void printTree();
 	node *search(int key);
 	void destroyTree();
@@ -56,7 +56,7 @@ public:
 private:
 	void parseData();
 	void destroyTree(node *leaf);
-	void insert(int key, int value, string attribute, string compare, string classification, NodeType type, node *leaf);
+	void insert(int key, float value, string attribute, string compare, string classification, NodeType type, node *leaf);
 	void printTree(node *leaf);
 	node *search(int key, node *leaf);
 

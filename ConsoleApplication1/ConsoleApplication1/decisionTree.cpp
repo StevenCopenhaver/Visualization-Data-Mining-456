@@ -49,7 +49,7 @@ void decisionTree::parseData()
 	node r;
 	r.key = 0;
 	r.attribute = "N/A";
-	r.value = 0;
+	r.value = 0.0;
 	r.comparison = "ROOT";
 	r.classification = "ROOT";
 	r.type = NodeType::SPLIT;
@@ -97,7 +97,7 @@ void decisionTree::parseData()
 		node n;
 		n.key = i;
 		n.attribute = attribute;
-		n.value = stoi(num);
+		n.value = stof(num);
 		n.comparison = comparison;
 		n.classification = decision;
 
@@ -163,7 +163,7 @@ void decisionTree::populateTree()
 	}
 }
 
-void decisionTree::insert(int key, int value, string attribute, string compare, string classification, NodeType type, node *parent)
+void decisionTree::insert(int key, float value, string attribute, string compare, string classification, NodeType type, node *parent)
 {
 	if (key < parent->key)
 	{
@@ -201,7 +201,7 @@ void decisionTree::insert(int key, int value, string attribute, string compare, 
 	}
 }
 
-void decisionTree::insert(int key, int value, string attribute, string compare, string classification, NodeType type)
+void decisionTree::insert(int key, float value, string attribute, string compare, string classification, NodeType type)
 {
 	if (root != NULL)
 		insert(key, value, attribute, compare, classification, type, root);
