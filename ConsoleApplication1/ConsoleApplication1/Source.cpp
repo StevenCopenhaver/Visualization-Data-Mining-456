@@ -168,7 +168,7 @@ void drawLHelp(float pointAX, float pointAY, float pointBX, float pointBY) {
 // Returns the Max double in the vector
 float getMaxVec(vector<double> v) {
 	float max = 0;
-	for (int i = 0; i < v.size; i++) {
+	for (int i = 0; i < v.size(); i++) {
 		if (v[i] > max) max = (float)v[i];
 	}
 
@@ -260,11 +260,21 @@ void drawQuadrant(int kindOf) {
 
 	//cout << "TEST " << tempXr->classification << "\n";
 
+	// NEED TO GET MAX FUNCTION
+	//float maxX = 8.0f;
+	float maxX = getMaxVec(xV);
+	//float maxY = 8.0f;
+	float maxY = getMaxVec(yV);
+	//float maxX2 = 8.0f;
+	float maxX2 = getMaxVec(xV2);
+	//float maxY2 = 8.0f;
+	float maxY2 = getMaxVec(yV2);
 
 	// TODO find max number
 	// ADD FOR DISABLED
-	//float maxX = atof(splitAt(2, tempXl->comparison).c_str()) * 2;
-	float maxRatioX = 0.5f;
+	float xVal = tempXl->value;
+	float maxRatioX = xVal / maxX;
+	maxRatioX = .5f;
 	int xRatio = (int)(((maxRatioX)*quandrantSize) + posX1);
 	//cout << xRatio << "\n";
 
@@ -311,20 +321,12 @@ void drawQuadrant(int kindOf) {
 	float pointBX;
 	float pointBY;
 
+	float yVal = xVal;
+	if (tempYr != nullptr) yVal = tempYr->value;
+	float maxRatioY = maxY / yVal;
+	maxRatioY = .5f;
 
-
-	//float maxY = atof(splitAt(2, tempYl->comparison).c_str()) * 2;
-	float maxRatioY = 0.5f;
-
-	// NEED TO GET MAX FUNCTION
-	//float maxX = 8.0f;
-	float maxX = getMaxVec(xV);
-	//float maxY = 8.0f;
-	float maxY = getMaxVec(yV);
-	//float maxX2 = 8.0f;
-	float maxX2 = getMaxVec(xV2);
-	//float maxY2 = 8.0f;
-	float maxY2 = getMaxVec(yV2);
+	cout << "tEST";
 
 	int yRatio = (int)(((maxRatioY)*quandrantSize) + posY1);
 	//cout << maxY << "\n";
@@ -510,7 +512,7 @@ void centerOnScreen() {
 
 void myDisplay(void) {
 	if (!done) {
-		tree.GetData("iris.txt");
+		tree.GetData("breasts2.txt");
 		/*vector<DataPoint> dp = tree.data;
 		for (unsigned i = 0; i < dp.size(); i++) {
 		for (unsigned j = 0; j < dp.at(i).attributes.size(); j++) {
