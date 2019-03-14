@@ -3,7 +3,7 @@
 #include <gl/Gl.h>
 #include <gl/glut.h>
 #include <iostream>
-
+#include <vector>
 
 using namespace std;
 
@@ -15,9 +15,9 @@ int window_x;
 int window_y;
 
 
-int window_width = 500;
-int window_height = 500;
-int quandrantSize = 100;
+int window_width = 1000;
+int window_height = 700;
+int quandrantSize = 200;
 int marginX = quandrantSize / 3;
 int marginY = quandrantSize / 3;
 int line_width = quandrantSize / 200;
@@ -116,10 +116,17 @@ Color getClassColor(string cls) {
  
 void drawLHelp(float pointAX, float pointAY, float pointBX, float pointBY) {
 	struct { GLubyte r, g, b; } c;
-	glReadPixels(pointAX, pointAY, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, &c);
+	glReadPixels(pointAX+5, pointAY+5, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, &c);
+	/*glColor3f(RED.r, RED.g, RED.b);
+	glBegin(GL_POINTS);
+	glVertex3f(pointAX + 5, pointAY + 5, 0.0f);
+	glEnd();
+	*/
+
 	GLubyte colorByte = static_cast<GLubyte>(GRAY.r * 255.f);
-	//cout << (int)colorByte << " " << (int)c.r << "\n";
+	cout << (int)colorByte << " " << (int)c.r << "\n";
 	if ((int)c.r == (int)colorByte) {
+	//if(true){
 		glLineWidth(line_width);
 		glBegin(GL_LINES);
 		// change color based off class
@@ -158,6 +165,11 @@ void drawLHelp(float pointAX, float pointAY, float pointBX, float pointBY) {
 
 }
 
+// Returns the Max double in the vector
+float getMaxVec(vector<double> v) {
+
+	return float;
+}
 
 float getRandF(float a, float b) {
 	float random = ((float)rand()) / (float)RAND_MAX;
@@ -168,6 +180,8 @@ float getRandF(float a, float b) {
 
 
 void drawQuadrant(int kindOf) {
+
+	vector<DataPoint> dp = tree.data;
 
 	//glMatrixMode(GL_PROJECTION);
 	//glLoadIdentity();
@@ -194,10 +208,20 @@ void drawQuadrant(int kindOf) {
 	// FIND MAX NUMBER ON XY
 	node* tempXr = tree.search(currentNode);
 	//cout << tempXr->attribute << "\n";
+	vector<double> xV = dp.at(currentNode).attributes;
+	string xVC = dp.at(currentNode).target;
+	vector<double> xV2 = dp.at(currentNode+4).attributes;
+	/*for (unsigned j = 0; j < dp.at(currentNode).attributes.size(); j++) {
+		cout << "X " << dp.at(currentNode).target << " " << dp.at(currentNode).attributes.at(j) << "\n";
+	}cout << "\n";*/
 	currentNode++;
 	node* tempXl = tree.search(currentNode);
 	if (kindOf == 3) currentNode-=2;
 	else currentNode++;
+
+
+
+
 	//cout << "TEST " << tempX->comparison << "\n";
 	/*NodeType test = tempX->right->type;
 	if(test == NodeType::CLASSIFICATION) 	cout << "TEST " << "\n";
@@ -215,6 +239,11 @@ void drawQuadrant(int kindOf) {
 
 	node* tempYr = tree.search(currentNode);
 	//cout << tempYr->attribute << "\n";
+	vector<double> yV = dp.at(currentNode).attributes;
+	vector<double> yV2 = dp.at(currentNode+4).attributes;
+	/*for (unsigned j = 0; j < dp.at(currentNode).attributes.size(); j++) {
+		cout << "Y " << dp.at(currentNode).target << " " << dp.at(currentNode).attributes.at(j) << "\n";
+	}cout << "\n";*/
 	currentNode++;
 	node* tempYl = tree.search(currentNode);
 	currentNode++;
@@ -282,21 +311,42 @@ void drawQuadrant(int kindOf) {
 	  
 	//float maxY = atof(splitAt(2, tempYl->comparison).c_str()) * 2;
 	float maxRatioY = 0.5f;
+
+	// NEED TO GET MAX FUNCTION
+	//float maxX = 8.0f;
+	float maxX = getMaxVec(xV);
+	//float maxY = 8.0f;
+	float maxY = getMaxVec(yV);
+	//float maxX2 = 8.0f;
+	float maxX2 = getMaxVec(xV2);
+	//float maxY2 = 8.0f;
+	float maxY2 = getMaxVec(yV2);
+
 	int yRatio = (int)(((maxRatioY)*quandrantSize) + posY1);
 	//cout << maxY << "\n";
 	//cout << yRatio << "\n";
 	// TODO add this if type == right tempYr->type == NodeType::RIGHT_SPLIT
 	if((kindOf==0) || (kindOf == 4)) {
 
+		pointAX = (int)(((0)*quandrantSize) + posX1);
+		pointAY = (int)(((0)*quandrantSize) + posY1);
+		pointBX = (int)(((0)*quandrantSize) + posX1B);
+		pointBY = (int)(((0)*quandrantSize) + posY1B);
+
+
+		for (unsigned i = 0; i < dp.at(currentNode).attributes.size(); i++) {
+			drawLHelp(pointAX + ((xV.at(i)/maxX)*quandrantSize), pointAY + ((yV.at(i) / maxY)*quandrantSize), 
+				pointBX + ((xV2.at(i) / maxX2)*quandrantSize), pointBY + ((yV2.at(i) / maxY2)*quandrantSize));
+		}
+
+
+		/*
 		// TODO just draw a point if not N/A
 		// TODO figure out how to draw multiple lines
 		//DRAW x
 		//DRAW yr
 		// predict where to draw line pick random point there 
-		pointAX = (int)(((maxRatioX / 2)*quandrantSize) + posX1);
-		pointAY = (int)(((maxRatioY / 2)*quandrantSize) + posY1);
-		pointBX = (int)(((maxRatioX / 2)*quandrantSize) + posX1B);
-		pointBY = (int)(((maxRatioY / 2)*quandrantSize) + posY1B);
+
 		drawLHelp(pointAX,
 			getRandF(pointAY+((maxRatioY / 2)*quandrantSize),pointAY- ((maxRatioY / 2)*quandrantSize))
 			, pointBX
@@ -407,7 +457,7 @@ void drawQuadrant(int kindOf) {
 			getRandF(pointAY + ((maxRatioY / 2)*quandrantSize), pointAY - ((maxRatioY / 2)*quandrantSize))
 			, pointBX
 			, getRandF(pointBY + ((maxRatioY / 2)*quandrantSize), pointBY - ((maxRatioY / 2)*quandrantSize)));
-
+			*/
 	}
 	else {
 		/*if (tree.search(i)->type == NodeType::RIGHT_SPLIT) {
@@ -421,7 +471,7 @@ void drawQuadrant(int kindOf) {
 		else {
 			cout << "TYPE LEFT\n";
 		}*/
-		if (tempYl->type == NodeType::RIGHT_SPLIT) { //right
+		if (true) { //right
 			cout << "TYPE RIGHT\n";
 				createRect(xRatio, yRatio, posX2, posY2, getClassColor(tempYr->classification));
 				createRect(xRatio, posY1, posX2, yRatio, getClassColor(tempYl->classification));	
@@ -455,6 +505,13 @@ void centerOnScreen(){
 
 void myDisplay(void){
 	if (!done) {
+		tree.GetData("iris.txt");
+		/*vector<DataPoint> dp = tree.data;
+		for (unsigned i = 0; i < dp.size(); i++) {
+			for (unsigned j = 0; j < dp.at(i).attributes.size(); j++) {
+				cout << dp.at(i).target << " " << dp.at(i).attributes.at(j) << "\n";
+			}cout <<  "\n";
+		}*/
 		glClear(GL_COLOR_BUFFER_BIT); // clear the screen
 		GLsizei w = window_width;
 		GLsizei h = window_height;
