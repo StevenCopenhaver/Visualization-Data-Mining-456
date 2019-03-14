@@ -167,8 +167,12 @@ void drawLHelp(float pointAX, float pointAY, float pointBX, float pointBY) {
 
 // Returns the Max double in the vector
 float getMaxVec(vector<double> v) {
+	float max = 0;
+	for(int i = 0; i < v.size; i++){
+		if (v[i] > max) max = (float)v[i];
+	}
 
-	return float;
+	return max;
 }
 
 float getRandF(float a, float b) {
